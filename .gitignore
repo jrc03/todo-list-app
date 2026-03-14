@@ -1,0 +1,17 @@
+# .NET / C#
+bin/
+obj/
+.vs/
+*.user
+
+# Frontend / JS
+node_modules/
+dist/
+build/
+
+# Archivos de la base de datos local
+tasks.json
+
+# Sistema Operativo
+.DS_Store
+Thumbs.db
