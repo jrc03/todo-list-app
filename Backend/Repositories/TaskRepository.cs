@@ -8,12 +8,18 @@ namespace Backend.Repositories
         private readonly string _filePath = "task.json";
         public List<TaskItem> GetAllTasks()
         {
-            if (!File.Exists(_filePath))
+            if (!File.Exists(_filePath)) return new List<TaskItem>();
+
+            try
             {
-                return new List<TaskItem>();
+                string json = File.ReadAllText(_filePath);
+                return JsonSerializer.Deserialize<List<TaskItem>>(json) ?? new List<TaskItem>();
             }
-            string json = File.ReadAllText(_filePath);
-            return JsonSerializer.Deserialize<List<TaskItem>>(json) ?? new List<TaskItem>();
+            catch (JsonException error)
+            {
+                throw new JsonException("Error loading json", error);
+            }
+
         }
 
         public void SaveAllTask(List<TaskItem> tasks)
