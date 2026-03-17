@@ -17,23 +17,21 @@ namespace Backend.Services
 
         public TaskItem CreateTask(TaskItem task)
         {
-            try
+            if (string.IsNullOrWhiteSpace(task.Title))
             {
-                task.Id = Guid.NewGuid();
-                task.Status = 0;
-                task.CreatedAt = DateTime.Now;
-
-                List<TaskItem> tasks = _repository.GetAllTasks();
-
-                tasks.Add(task);
-                _repository.SaveAllTask(tasks);
-                return task;
+                throw new ArgumentException("Title is required.");
             }
-            catch (Exception ex)
-            {
-                throw new Exception("Error: ", ex);
-            }
+
+            task.Id = Guid.NewGuid();
+            task.Status = Backend.Models.TaskStatus.Pending;
+            task.CreatedAt = DateTime.UtcNow;
+
+            List<TaskItem> tasks = _repository.GetAllTasks();
+            tasks.Add(task);
+            _repository.SaveAllTask(tasks);
+            return task;
         }
+
         public List<TaskItem> GetAllTasks(Models.TaskStatus? status = null)
         {
             List<TaskItem> tasks = _repository.GetAllTasks();
@@ -43,60 +41,70 @@ namespace Backend.Services
             }
             return tasks;
         }
+
         public TaskItem GetTaskById(Guid id)
         {
             List<TaskItem> tasks = _repository.GetAllTasks();
-            try
-            {
-                return tasks.FirstOrDefault(task => task.Id == id)!;
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Error: " + e);
-            }
-
-
-
+            return tasks.FirstOrDefault(task => task.Id == id)!;
         }
 
         public TaskItem UpdateTask(Guid id, TaskItem updatedTask)
         {
             List<TaskItem> tasks = _repository.GetAllTasks();
-            try
+            var task = tasks.FirstOrDefault(t => t.Id == id);
+
+            if (task == null)
             {
-                var task = tasks.FirstOrDefault(t => t.Id == id);
-
-                if (task == null) throw new Exception("Task not found");
-
-                task.Title = updatedTask.Title;
-                task.Description = updatedTask.Description;
-                task.DueDate = updatedTask.DueDate;
-                task.Status = updatedTask.Status;
-
-                _repository.SaveAllTask(tasks);
-
-                return task;
+                throw new KeyNotFoundException("Task not found.");
             }
-            catch (Exception e)
+
+            if (string.IsNullOrWhiteSpace(updatedTask.Title))
             {
-                throw new Exception("Error: " + e);
+                throw new ArgumentException("Title is required.");
             }
+
+            task.Title = updatedTask.Title.Trim();
+            task.Description = updatedTask.Description;
+            task.DueDate = updatedTask.DueDate;
+
+            _repository.SaveAllTask(tasks);
+
+            return task;
         }
-        public void DeleteTask(Guid id)
+
+        public TaskItem CompleteTask(Guid id)
         {
             List<TaskItem> tasks = _repository.GetAllTasks();
-            try
-            {
-                var task = tasks.FirstOrDefault(t => t.Id == id);
-                if (task == null) throw new Exception("Task not found");
+            var task = tasks.FirstOrDefault(t => t.Id == id);
 
-                tasks.Remove(task);
-                _repository.SaveAllTask(tasks);
-            }
-            catch (Exception e)
+            if (task == null)
             {
-                throw new Exception("Error: " + e);
+                throw new KeyNotFoundException("Task not found.");
             }
+
+            if (task.Status == Backend.Models.TaskStatus.Completed)
+            {
+                throw new InvalidOperationException("Task is already completed.");
+            }
+
+            task.Status = Backend.Models.TaskStatus.Completed;
+            _repository.SaveAllTask(tasks);
+
+            return task;
+        }
+
+        public bool DeleteTask(Guid id)
+        {
+            List<TaskItem> tasks = _repository.GetAllTasks();
+            var task = tasks.FirstOrDefault(t => t.Id == id);
+            if (task == null)
+            {
+                return false;
+            }
+
+            tasks.Remove(task);
+            _repository.SaveAllTask(tasks);
+            return true;
         }
     }
 }

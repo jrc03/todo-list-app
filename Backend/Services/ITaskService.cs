@@ -12,7 +12,8 @@ namespace Backend.Services
         List<TaskItem> GetAllTasks(Models.TaskStatus? status = null);
         TaskItem GetTaskById(Guid id);
         TaskItem UpdateTask(Guid id, TaskItem updatedTask);
-        void DeleteTask(Guid id);
+        TaskItem CompleteTask(Guid id);
+        bool DeleteTask(Guid id);
 
     }
 }
