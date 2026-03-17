@@ -3,6 +3,7 @@ bin/
 obj/
 .vs/
 *.user
+tasks.json
 
 # Frontend / JS
 node_modules/
@@ -10,7 +11,7 @@ dist/
 build/
 
 # Local JSON
-tasks.json
+task.json
 
 # OS
 .DS_Store
@@ -64,3 +65,8 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# Environment files
+.env
+.env.*
+*.env
