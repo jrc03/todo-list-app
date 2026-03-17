@@ -3,7 +3,7 @@ const API_BASE = import.meta.env.VITE_API_URL;
 export const taskApi = {
   getAllTask: async (status = null) => {
     let url = API_BASE;
-    if (status != null) url += `?status=${status}`;
+    if (status) url += `?status=${status}`;
 
     const response = await fetch(url);
     if (!response.ok) throw new Error("Failed to load tasks");
@@ -32,6 +32,19 @@ export const taskApi = {
     });
 
     if (!response.ok) throw new Error("Failed to update task");
+    return response.json();
+  },
+
+  completeTask: async (id) => {
+    const response = await fetch(`${API_BASE}/${id}/complete`, {
+      method: "PATCH",
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.json().catch(() => ({}));
+      throw new Error(errorBody.message || "Failed to complete task");
+    }
+
     return response.json();
   },
 
