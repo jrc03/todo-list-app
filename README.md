@@ -34,6 +34,7 @@ Open a new terminal, navigate to the `Frontend` folder, install dependencies, an
 ```bash
 cd Frontend
 npm install
+npm install -D @tailwindcss/postcss tailwindcss postcss autoprefixer
 npm run dev
 ```
 
