@@ -5,46 +5,53 @@ function formatDate(value) {
   return d.toLocaleString();
 }
 
-export default function TaskCard({ task, onDelete, onComplete }) {
+export default function TaskCard({ task, onDelete, onEdit, onComplete }) {
   const isCompleted = task.status === 1;
 
   return (
-    <div className="p-5 border rounded-lg shadow-sm bg-gray-50 flex justify-between items-start transition-all hover:shadow-md">
+    <div className="flex items-start justify-between gap-4 rounded-2xl border border-surface-700 bg-surface-900 p-5 transition-colors hover:border-surface-600">
       <div className="flex flex-col gap-2">
         <h2
-          className={`text-lg font-bold ${isCompleted ? "line-through text-gray-400" : "text-gray-900"}`}
+          className={`text-lg font-bold ${isCompleted ? "line-through text-surface-300/75" : "text-surface-100"}`}
         >
           {task.title}
         </h2>
 
-        {task.description && <p className="text-sm text-gray-600">{task.description}</p>}
+        {task.description && <p className="text-sm text-surface-200/90">{task.description}</p>}
 
-        <div className="text-xs text-gray-500">
+        <div className="text-xs text-surface-300/90">
           <p>Created: {formatDate(task.createdAt)}</p>
           <p>Due: {formatDate(task.dueDate)}</p>
         </div>
 
         <span
-          className={`text-xs px-2 py-1 rounded w-max mt-1 font-medium ${
-            isCompleted ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"
+          className={`mt-1 w-max rounded-full px-3 py-1 text-xs font-semibold ${
+            isCompleted ? "bg-success-500/25 text-success-500" : "bg-warning-500/20 text-warning-500"
           }`}
         >
           {isCompleted ? "Completed" : "Pending"}
         </span>
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex flex-col gap-2 sm:flex-row">
+        <button
+          onClick={() => onEdit(task)}
+          className="rounded-xl border border-surface-600 bg-surface-800 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-surface-100 transition hover:bg-surface-700"
+        >
+          Edit
+        </button>
+
         <button
           onClick={() => onComplete(task.id)}
           disabled={isCompleted}
-          className="px-3 py-1 bg-blue-100 text-blue-700 text-sm font-semibold rounded hover:bg-blue-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="rounded-xl bg-brand-500 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-surface-100 transition hover:bg-brand-400 disabled:cursor-not-allowed disabled:bg-surface-700 disabled:text-surface-300"
         >
           Complete
         </button>
 
         <button
           onClick={() => onDelete(task.id)}
-          className="px-3 py-1 bg-red-100 text-red-700 text-sm font-semibold rounded hover:bg-red-200 transition-colors"
+          className="rounded-xl border border-danger-500/70 bg-transparent px-4 py-2 text-xs font-semibold uppercase tracking-wide text-danger-500 transition hover:bg-danger-500/15"
         >
           Delete
         </button>

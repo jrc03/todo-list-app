@@ -1,21 +1,27 @@
 import TaskCard from "./TaskCard";
 
-export default function TaskList({ tasks, loading, error, onDelete, onComplete }) {
+export default function TaskList({ tasks, loading, error, onDelete, onEdit, onComplete }) {
   if (loading)
-    return <p className="text-gray-500 text-center py-4">Loading tasks...</p>;
+    return <p className="py-6 text-center text-surface-300">Loading tasks...</p>;
   if (error)
-    return <p className="text-red-500 text-center py-4">Error: {error}</p>;
+    return <p className="py-6 text-center text-danger-500">Error: {error}</p>;
   if (tasks.length === 0)
     return (
-      <p className="text-gray-500 text-center italic py-4">
+      <p className="py-8 text-center italic text-surface-300">
         No tasks found. Create one!
       </p>
     );
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {tasks.map((t) => (
-        <TaskCard key={t.id} task={t} onDelete={onDelete} onComplete={onComplete} />
+        <TaskCard
+          key={t.id}
+          task={t}
+          onDelete={onDelete}
+          onEdit={onEdit}
+          onComplete={onComplete}
+        />
       ))}
     </div>
   );
