@@ -42,10 +42,10 @@ namespace Backend.Services
             return tasks;
         }
 
-        public TaskItem GetTaskById(Guid id)
+        public TaskItem? GetTaskById(Guid id)
         {
             List<TaskItem> tasks = _repository.GetAllTasks();
-            return tasks.FirstOrDefault(task => task.Id == id)!;
+            return tasks.FirstOrDefault(task => task.Id == id);
         }
 
         public TaskItem UpdateTask(Guid id, TaskItem updatedTask)

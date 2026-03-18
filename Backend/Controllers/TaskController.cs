@@ -23,16 +23,30 @@ namespace Backend.Controllers
         [HttpGet]
         public ActionResult<List<TaskItem>> GetAll([FromQuery] Models.TaskStatus? status = null)
         {
-            var tasks = _taskService.GetAllTasks(status);
-            return Ok(tasks);
+            try
+            {
+                var tasks = _taskService.GetAllTasks(status);
+                return Ok(tasks);
+            }
+            catch (InvalidDataException ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
+            }
         }
 
         [HttpGet("{id}")]
         public ActionResult<TaskItem> GetTaskByID(Guid id)
         {
-            var task = _taskService.GetTaskById(id);
-            if (task == null) return NotFound();
-            return Ok(task);
+            try
+            {
+                var task = _taskService.GetTaskById(id);
+                if (task == null) return NotFound();
+                return Ok(task);
+            }
+            catch (InvalidDataException ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
+            }
         }
 
         [HttpPost]
@@ -56,12 +70,19 @@ namespace Backend.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteTask(Guid id)
         {
-            var deleted = _taskService.DeleteTask(id);
-            if (!deleted)
+            try
             {
-                return NotFound(new { message = "Task not found." });
+                var deleted = _taskService.DeleteTask(id);
+                if (!deleted)
+                {
+                    return NotFound(new { message = "Task not found." });
+                }
+                return NoContent();
             }
-            return NoContent();
+            catch (InvalidDataException ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
+            }
         }
 
         [HttpPut("{id}")]
