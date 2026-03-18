@@ -1,19 +1,34 @@
 export default function FilterBar({ value, onChange }) {
+  const options = [
+    { label: "All", value: "" },
+    { label: "Pending", value: "pending" },
+    { label: "Completed", value: "completed" },
+  ];
+
   return (
-    <div className="bg-gray-50 p-4 border border-gray-200 rounded-md mb-4">
-      <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="status-filter">
-        Filter by status
-      </label>
-      <select
-        id="status-filter"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 outline-none"
-      >
-        <option value="">All</option>
-        <option value="pending">Pending</option>
-        <option value="completed">Completed</option>
-      </select>
+    <div className="rounded-2xl border border-surface-700 bg-surface-900 p-4 sm:p-5">
+      <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-surface-300">
+        Filter Tasks
+      </p>
+      <div className="flex flex-wrap gap-2">
+        {options.map((option) => {
+          const active = value === option.value;
+          return (
+            <button
+              key={option.label}
+              type="button"
+              onClick={() => onChange(option.value)}
+              className={`rounded-xl px-4 py-2 text-sm font-semibold transition-all ${
+                active
+                  ? "bg-brand-500 text-surface-100"
+                  : "bg-surface-800 text-surface-200 hover:bg-surface-700"
+              }`}
+            >
+              {option.label}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
